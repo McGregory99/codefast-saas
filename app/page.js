@@ -2,15 +2,17 @@ import ButtonLogin from "@/components/ButtonLogin";
 import FAQListItem from "@/components/FAQListItem";
 import Image from "next/image";
 import productDemo from "./productDemo.jpeg";
-export default function Home() {
-  const isLoggedIn = true;
-  const name = "Goyo";
+import { auth } from "@/auth";
+
+export default async function Home() {
+  const session = await auth();
   const pricingItemList = [
     "Collect customer feedback",
     "Unlimited boards",
     "Admin dashboard",
     "24/7 support",
   ];
+
   return (
     <main>
       {/* HEADER */}
@@ -26,10 +28,11 @@ export default function Home() {
             </a>
           </div>
           <div>
-            <ButtonLogin isLoggedIn={isLoggedIn} name={name} />
+            <ButtonLogin session={session} />
           </div>
         </div>
       </section>
+
       {/* HERO */}
       <section className="text-center lg:text-left py-32 px-8 max-w-5xl mx-auto flex flex-col lg:flex-row gap-14 items-center lg:items-start">
         <Image
@@ -45,9 +48,10 @@ export default function Home() {
             Create a feedback board in minutes, prioritize features and make
             products that your customers actually will love
           </div>
-          <ButtonLogin isLoggedIn={isLoggedIn} name={name} />
+          <ButtonLogin session={session} />
         </div>
       </section>
+
       {/* PRICING */}
       <section className="bg-base-200" id="pricing">
         <div className="py-32 px-8 max-w-3xl mx-auto">
@@ -90,15 +94,12 @@ export default function Home() {
               })}
             </ul>
             <div>
-              <ButtonLogin
-                isLoggedIn={isLoggedIn}
-                name={name}
-                extraStyle={"w-full"}
-              />
+              <ButtonLogin session={session} extraStyle={"w-full"} />
             </div>
           </div>
         </div>
       </section>
+
       {/* FAQ */}
       <section className="bg-base-200" id="faq">
         <div className="py-32 px-8 max-w-3xl mx-auto">

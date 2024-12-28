@@ -34,7 +34,9 @@ export default async function Dashboard() {
           <ul className="space-y-4">
             {user.boards.map((board) => {
               return (
-                <div className="bg-base-100 p-6 rounded-3xl">{board.name}</div>
+                <div key={board.id} className="bg-base-100 p-6 rounded-3xl">
+                  {board.name}
+                </div>
               );
             })}
           </ul>

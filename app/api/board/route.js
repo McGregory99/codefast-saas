@@ -31,7 +31,39 @@ export async function POST(req) {
     user.boards.push(board._id);
     await user.save();
 
-    return NextResponse.json({ board });
+    return NextResponse.json({ board }); // Close the HTTP conection
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    // DELETE https://localhost:3000/api/board/?boardId=e3iub14iue2bidbsf
+    // const searchParams = req.nextUrl.searchParams;
+    const { searchParams } = req.nextUrl;
+    const boardId = searchParams.get("boardId");
+
+    if (!boardId) {
+      return NextResponse.json(
+        { error: "boardId is required" },
+        { status: 400 }
+      );
+    }
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+    }
+
+    await Board.deleteOne({
+      _id: boardId,
+      userId: session?.user?.id,
+    });
+
+    const user = await User.findById(session?.user?.id);
+    user.boards = user.boards.filter((id) => id.toString() !== boardId);
+    await user.save();
+    return NextResponse.json({}); // Close the HTTP conection
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

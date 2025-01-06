@@ -37,5 +37,11 @@ export async function POST(req) {
     });
 
     return NextResponse.json({ url: stripeCheckoutSession.url });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    return NextResponse.json(
+      { error: "An error occurred while creating the checkout session" },
+      { status: 500 }
+    );
+  }
 }

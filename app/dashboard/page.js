@@ -6,50 +6,51 @@ import connectMongo from "@/libs/mongoose";
 import User from "@/models/User";
 import Board from "@/models/Board";
 import ButtonCheckout from "@/components/ButtonCheckout";
+import ButtonPortal from "@/components/ButtonPortal";
 
 async function getUser() {
-  const session = await auth();
+    const session = await auth();
 
-  await connectMongo();
+    await connectMongo();
 
-  return await User.findById(session.user.id).populate("boards");
+    return await User.findById(session.user.id).populate("boards");
 }
 
 export default async function Dashboard() {
-  const user = await getUser();
+    const user = await getUser();
 
-  return (
-    <main className="bg-base-200 min-h-screen">
-      {/* HEADER */}
-      <section className="bg-base-100">
-        <div className="max-w-5xl mx-auto px-5 py-3 flex justify-between">
-          <ButtonCheckout />
-          <ButtonLogout />
-        </div>
-      </section>
-      <section className="max-w-5xl mx-auto px-5 py-12 space-y-12">
-        <FormNewBoard />
-        <div>
-          <h1 className="font-extrabold text-xl mb-4">
-            {user.boards.length} Boards
-          </h1>
+    return (
+        <main className="bg-base-200 min-h-screen">
+            {/* HEADER */}
+            <section className="bg-base-100">
+                <div className="max-w-5xl mx-auto px-5 py-3 flex justify-between">
+                    {user.hasAccess ? <ButtonPortal /> : <ButtonCheckout />}
+                    <ButtonLogout />
+                </div>
+            </section>
+            <section className="max-w-5xl mx-auto px-5 py-12 space-y-12">
+                <FormNewBoard />
+                <div>
+                    <h1 className="font-extrabold text-xl mb-4">
+                        {user.boards.length} Boards
+                    </h1>
 
-          <ul className="space-y-4">
-            {user.boards.map((board) => {
-              return (
-                <li key={board._id}>
-                  <Link
-                    href={`/dashboard/b/${board._id}`}
-                    className="block bg-base-100 p-6 rounded-3xl hover:bg-neutral hover:text-neutral-content duration-200"
-                  >
-                    {board.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
-    </main>
-  );
+                    <ul className="space-y-4">
+                        {user.boards.map((board) => {
+                            return (
+                                <li key={board._id}>
+                                    <Link
+                                        href={`/dashboard/b/${board._id}`}
+                                        className="block bg-base-100 p-6 rounded-3xl hover:bg-neutral hover:text-neutral-content duration-200"
+                                    >
+                                        {board.name}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            </section>
+        </main>
+    );
 }
